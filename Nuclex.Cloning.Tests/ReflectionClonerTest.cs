@@ -1,4 +1,4 @@
-﻿#region CPL License
+#region CPL License
 /*
 Nuclex Framework
 Copyright (C) 2002-2012 Nuclex Development Labs
@@ -22,6 +22,7 @@ namespace Nuclex.Cloning.Tests
     using System.Collections.Generic;
     using Interfaces;
     using NUnit.Framework;
+    using NUnit.Framework.Legacy;
 
     /// <summary>Unit Test for the reflection-based cloner</summary>
     [TestFixture]
@@ -37,10 +38,10 @@ namespace Nuclex.Cloning.Tests
         [Test]
         public void CloningNullYieldsNull()
         {
-            Assert.IsNull(this.cloneFactory.DeepFieldClone<object>(null));
-            Assert.IsNull(this.cloneFactory.DeepPropertyClone<object>(null));
-            Assert.IsNull(this.cloneFactory.ShallowFieldClone<object>(null));
-            Assert.IsNull(this.cloneFactory.ShallowPropertyClone<object>(null));
+            Assert.That(this.cloneFactory.DeepFieldClone<object>(null), Is.Null);
+            Assert.That(this.cloneFactory.DeepPropertyClone<object>(null), Is.Null);
+            Assert.That(this.cloneFactory.ShallowFieldClone<object>(null), Is.Null);
+            Assert.That(this.cloneFactory.ShallowPropertyClone<object>(null), Is.Null);
         }
 
         /// <summary>
@@ -53,8 +54,8 @@ namespace Nuclex.Cloning.Tests
             var original = new ClassWithoutDefaultConstructor(1234);
             ClassWithoutDefaultConstructor clone = this.cloneFactory.DeepFieldClone(original);
 
-            Assert.AreNotSame(original, clone);
-            Assert.AreEqual(original.Dummy, clone.Dummy);
+            Assert.That(clone, Is.Not.SameAs(original));
+            Assert.That(clone.Dummy, Is.EqualTo(original.Dummy));
         }
 
         /// <summary>Verifies that clones of primitive types can be created</summary>
@@ -63,7 +64,7 @@ namespace Nuclex.Cloning.Tests
         {
             int original = 12345;
             int clone = this.cloneFactory.ShallowFieldClone(original);
-            Assert.AreEqual(original, clone);
+            Assert.That(clone, Is.EqualTo(original));
         }
 
         /// <summary>Verifies that shallow clones of arrays can be made</summary>
@@ -76,7 +77,7 @@ namespace Nuclex.Cloning.Tests
             };
             TestReferenceType[] clone = this.cloneFactory.ShallowFieldClone(original);
 
-            Assert.AreSame(original[0], clone[0]);
+            Assert.That(clone[0], Is.SameAs(original[0]));
         }
 
         /// <summary>Verifies that deep clones of arrays can be made</summary>
@@ -89,9 +90,9 @@ namespace Nuclex.Cloning.Tests
             };
             TestReferenceType[] clone = this.cloneFactory.DeepFieldClone(original);
 
-            Assert.AreNotSame(original[0], clone[0]);
-            Assert.AreEqual(original[0].TestField, clone[0].TestField);
-            Assert.AreEqual(original[0].TestProperty, clone[0].TestProperty);
+            Assert.That(clone[0], Is.Not.SameAs(original[0]));
+            Assert.That(clone[0].TestField, Is.EqualTo(original[0].TestField));
+            Assert.That(clone[0].TestProperty, Is.EqualTo(original[0].TestProperty));
         }
 
         /// <summary>Verifies that deep clones of a generic list can be made</summary>
@@ -101,7 +102,7 @@ namespace Nuclex.Cloning.Tests
             var original = new List<int>(new[] {1, 2, 3, 4, 5, 6, 7, 8, 9});
             List<int> clone = this.cloneFactory.DeepFieldClone(original);
 
-            CollectionAssert.AreEqual(original, clone);
+            CollectionAssert.AreEqual(clone, original);
         }
 
         /// <summary>Verifies that deep clones of a generic dictionary can be made</summary>
@@ -112,7 +113,7 @@ namespace Nuclex.Cloning.Tests
             original.Add(1, "one");
             Dictionary<int, string> clone = this.cloneFactory.DeepFieldClone(original);
 
-            Assert.AreEqual("one", clone[1]);
+            Assert.That(clone[1], Is.EqualTo("one"));
         }
 
         /// <summary>

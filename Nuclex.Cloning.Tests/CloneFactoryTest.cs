@@ -1,4 +1,4 @@
-﻿#region CPL License
+#region CPL License
 /*
 Nuclex Framework
 Copyright (C) 2002-2012 Nuclex Development Labs
@@ -108,6 +108,12 @@ namespace Nuclex.Cloning.Tests
             public TestReferenceType SetOnlyProperty { set { } }
             /// <summary>Field typed as base class holding a derived instance</summary>
             public TestReferenceType DerivedField;
+
+            public HierarchicalValueType()
+            {
+                AlwaysNullField = null;
+            }
+
             /// <summary>Field typed as base class holding a derived instance</summary>
             public TestReferenceType DerivedProperty { get; set; }
 
@@ -149,6 +155,11 @@ namespace Nuclex.Cloning.Tests
             public TestReferenceType DerivedField;
             /// <summary>Field typed as base class holding a derived instance</summary>
             public TestReferenceType DerivedProperty { get; set; }
+
+            public HierarchicalReferenceType()
+            {
+                AlwaysNullField = null;
+            }
 
         }
 
@@ -197,128 +208,89 @@ namespace Nuclex.Cloning.Tests
           bool isDeepClone, bool isPropertyBasedClone
         )
         {
-            Assert.AreNotSame(original, clone);
-
+            Assert.That(clone, Is.Not.SameAs(original));
             if (isPropertyBasedClone)
             {
-                Assert.AreEqual(0, clone.TestField);
-                Assert.AreEqual(0, clone.ValueTypeField.TestField);
-                Assert.AreEqual(0, clone.ValueTypeField.TestProperty);
-                Assert.AreEqual(0, clone.ValueTypeProperty.TestField);
-                Assert.IsNull(clone.ReferenceTypeField);
-                Assert.IsNull(clone.DerivedField);
+                Assert.That(clone.TestField, Is.EqualTo(0));
+                Assert.That(clone.ValueTypeField.TestField, Is.EqualTo(0));
+                Assert.That(clone.ValueTypeField.TestProperty, Is.EqualTo(0));
+                Assert.That(clone.ValueTypeProperty.TestField, Is.EqualTo(0));
+                Assert.That(clone.ReferenceTypeField, Is.Null);
+                Assert.That(clone.DerivedField, Is.Null);
 
                 if (isDeepClone)
                 {
-                    Assert.AreNotSame(original.ReferenceTypeProperty, clone.ReferenceTypeProperty);
-                    Assert.AreNotSame(
-                      original.ReferenceTypeArrayProperty, clone.ReferenceTypeArrayProperty
-                    );
-                    Assert.AreNotSame(original.DerivedProperty, clone.DerivedProperty);
-                    Assert.IsInstanceOf<DerivedReferenceType>(clone.DerivedProperty);
+                    Assert.That(clone.ReferenceTypeProperty, Is.Not.SameAs(original.ReferenceTypeProperty));
+                    Assert.That(clone.ReferenceTypeArrayProperty, Is.Not.SameAs(original.ReferenceTypeArrayProperty));
+                    Assert.That(clone.DerivedProperty, Is.Not.SameAs(original.DerivedProperty));
+                    Assert.That(clone.DerivedProperty, Is.InstanceOf<DerivedReferenceType>());
 
                     var originalDerived = (DerivedReferenceType)original.DerivedProperty;
                     var clonedDerived = (DerivedReferenceType)clone.DerivedProperty;
-                    Assert.AreEqual(originalDerived.TestProperty, clonedDerived.TestProperty);
-                    Assert.AreEqual(originalDerived.DerivedProperty, clonedDerived.DerivedProperty);
+                    Assert.That(clonedDerived.TestProperty, Is.EqualTo(originalDerived.TestProperty));
+                    Assert.That(clonedDerived.DerivedProperty, Is.EqualTo(originalDerived.DerivedProperty));
 
-                    Assert.AreEqual(0, clone.ReferenceTypeProperty.TestField);
-                    Assert.AreNotSame(
-                      original.ReferenceTypeArrayProperty[1, 3][0],
-                      clone.ReferenceTypeArrayProperty[1, 3][0]
-                    );
-                    Assert.AreNotSame(
-                      original.ReferenceTypeArrayProperty[1, 3][2],
-                      clone.ReferenceTypeArrayProperty[1, 3][2]
-                    );
-                    Assert.AreEqual(0, clone.ReferenceTypeArrayProperty[1, 3][0].TestField);
-                    Assert.AreEqual(0, clone.ReferenceTypeArrayProperty[1, 3][2].TestField);
+                    Assert.That(clone.ReferenceTypeProperty.TestField, Is.EqualTo(0));
+                    Assert.That(clone.ReferenceTypeArrayProperty[1, 3][0], Is.Not.SameAs(original.ReferenceTypeArrayProperty[1, 3][0]));
+                    Assert.That(clone.ReferenceTypeArrayProperty[1, 3][2], Is.Not.SameAs(original.ReferenceTypeArrayProperty[1, 3][2]));
+                    Assert.That(clone.ReferenceTypeArrayProperty[1, 3][0].TestField, Is.EqualTo(0));
+                    Assert.That(clone.ReferenceTypeArrayProperty[1, 3][2].TestField, Is.EqualTo(0));
                 }
                 else
                 {
-                    Assert.AreSame(original.ReferenceTypeProperty, clone.ReferenceTypeProperty);
-                    Assert.AreSame(original.ReferenceTypeProperty, clone.ReferenceTypeProperty);
-                    Assert.AreSame(
-                      original.ReferenceTypeArrayProperty, clone.ReferenceTypeArrayProperty
-                    );
+                    Assert.That(clone.ReferenceTypeProperty, Is.SameAs(original.ReferenceTypeProperty));
+                    Assert.That(clone.ReferenceTypeProperty, Is.SameAs(original.ReferenceTypeProperty));
+                    Assert.That(clone.ReferenceTypeArrayProperty, Is.SameAs(original.ReferenceTypeArrayProperty));
                 }
             }
             else
             {
-                Assert.AreEqual(original.TestField, clone.TestField);
-                Assert.AreEqual(original.ValueTypeField.TestField, clone.ValueTypeField.TestField);
-                Assert.AreEqual(original.ValueTypeField.TestProperty, clone.ValueTypeField.TestProperty);
-                Assert.AreEqual(
-                  original.ValueTypeProperty.TestField, clone.ValueTypeProperty.TestField
-                );
-                Assert.AreEqual(
-                  original.ReferenceTypeField.TestField, clone.ReferenceTypeField.TestField
-                );
-                Assert.AreEqual(
-                  original.ReferenceTypeField.TestProperty, clone.ReferenceTypeField.TestProperty
-                );
-                Assert.AreEqual(
-                  original.ReferenceTypeProperty.TestField, clone.ReferenceTypeProperty.TestField
-                );
+                Assert.That(clone.TestField, Is.EqualTo(original.TestField));
+                Assert.That(clone.ValueTypeField.TestField, Is.EqualTo(original.ValueTypeField.TestField));
+                Assert.That(clone.ValueTypeField.TestProperty, Is.EqualTo(original.ValueTypeField.TestProperty));
+                Assert.That(clone.ValueTypeProperty.TestField, Is.EqualTo(original.ValueTypeProperty.TestField));
+                Assert.That(clone.ReferenceTypeField.TestField, Is.EqualTo(original.ReferenceTypeField.TestField));
+                Assert.That(clone.ReferenceTypeField.TestProperty, Is.EqualTo(original.ReferenceTypeField.TestProperty));
+                Assert.That(clone.ReferenceTypeProperty.TestField, Is.EqualTo(original.ReferenceTypeProperty.TestField));
 
                 if (isDeepClone)
                 {
-                    Assert.AreNotSame(original.ReferenceTypeField, clone.ReferenceTypeField);
-                    Assert.AreNotSame(original.ReferenceTypeProperty, clone.ReferenceTypeProperty);
-                    Assert.AreNotSame(original.DerivedField, clone.DerivedField);
-                    Assert.AreNotSame(original.DerivedProperty, clone.DerivedProperty);
-                    Assert.IsInstanceOf<DerivedReferenceType>(clone.DerivedField);
-                    Assert.IsInstanceOf<DerivedReferenceType>(clone.DerivedProperty);
+                    Assert.That(clone.ReferenceTypeField, Is.Not.SameAs(original.ReferenceTypeField));
+                    Assert.That(clone.ReferenceTypeProperty, Is.Not.SameAs(original.ReferenceTypeProperty));
+                    Assert.That(clone.DerivedField, Is.Not.SameAs(original.DerivedField));
+                    Assert.That(clone.DerivedProperty, Is.Not.SameAs(original.DerivedProperty));
+                    Assert.That(clone.DerivedField, Is.InstanceOf<DerivedReferenceType>());
+                    Assert.That(clone.DerivedProperty, Is.InstanceOf<DerivedReferenceType>());
 
                     var originalDerived = (DerivedReferenceType)original.DerivedField;
                     var clonedDerived = (DerivedReferenceType)clone.DerivedField;
-                    Assert.AreEqual(originalDerived.TestField, clonedDerived.TestField);
-                    Assert.AreEqual(originalDerived.TestProperty, clonedDerived.TestProperty);
-                    Assert.AreEqual(originalDerived.DerivedField, clonedDerived.DerivedField);
-                    Assert.AreEqual(originalDerived.DerivedProperty, clonedDerived.DerivedProperty);
+                    Assert.That(clonedDerived.TestField, Is.EqualTo(originalDerived.TestField));
+                    Assert.That(clonedDerived.TestProperty, Is.EqualTo(originalDerived.TestProperty));
+                    Assert.That(clonedDerived.DerivedField, Is.EqualTo(originalDerived.DerivedField));
+                    Assert.That(clonedDerived.DerivedProperty, Is.EqualTo(originalDerived.DerivedProperty));
 
                     originalDerived = (DerivedReferenceType)original.DerivedProperty;
                     clonedDerived = (DerivedReferenceType)clone.DerivedProperty;
-                    Assert.AreEqual(originalDerived.TestField, clonedDerived.TestField);
-                    Assert.AreEqual(originalDerived.TestProperty, clonedDerived.TestProperty);
-                    Assert.AreEqual(originalDerived.DerivedField, clonedDerived.DerivedField);
-                    Assert.AreEqual(originalDerived.DerivedProperty, clonedDerived.DerivedProperty);
+                    Assert.That(clonedDerived.TestField, Is.EqualTo(originalDerived.TestField));
+                    Assert.That(clonedDerived.TestProperty, Is.EqualTo(originalDerived.TestProperty));
+                    Assert.That(clonedDerived.DerivedField, Is.EqualTo(originalDerived.DerivedField));
+                    Assert.That(clonedDerived.DerivedProperty, Is.EqualTo(originalDerived.DerivedProperty));
 
-                    Assert.AreNotSame(
-                      original.ReferenceTypeArrayField, clone.ReferenceTypeArrayField
-                    );
-                    Assert.AreNotSame(
-                      original.ReferenceTypeArrayProperty, clone.ReferenceTypeArrayProperty
-                    );
-                    Assert.AreNotSame(
-                      original.ReferenceTypeArrayProperty[1, 3][0],
-                      clone.ReferenceTypeArrayProperty[1, 3][0]
-                    );
-                    Assert.AreNotSame(
-                      original.ReferenceTypeArrayProperty[1, 3][2],
-                      clone.ReferenceTypeArrayProperty[1, 3][2]
-                    );
-                    Assert.AreEqual(
-                      original.ReferenceTypeArrayProperty[1, 3][0].TestField,
-                      clone.ReferenceTypeArrayProperty[1, 3][0].TestField
-                    );
-                    Assert.AreEqual(
-                      original.ReferenceTypeArrayProperty[1, 3][2].TestField,
-                      clone.ReferenceTypeArrayProperty[1, 3][2].TestField
-                    );
+                    Assert.That(clone.ReferenceTypeArrayField, Is.Not.SameAs(original.ReferenceTypeArrayField));
+                    Assert.That(clone.ReferenceTypeArrayProperty, Is.Not.SameAs(original.ReferenceTypeArrayProperty));
+                    Assert.That(clone.ReferenceTypeArrayProperty[1, 3][0], Is.Not.SameAs(original.ReferenceTypeArrayProperty[1, 3][0]));
+                    Assert.That(clone.ReferenceTypeArrayProperty[1, 3][2], Is.Not.SameAs(original.ReferenceTypeArrayProperty[1, 3][2]));
+                    Assert.That(clone.ReferenceTypeArrayProperty[1, 3][0].TestField, Is.EqualTo(original.ReferenceTypeArrayProperty[1, 3][0].TestField));
+                    Assert.That(clone.ReferenceTypeArrayProperty[1, 3][2].TestField, Is.EqualTo(original.ReferenceTypeArrayProperty[1, 3][2].TestField));
                 }
                 else
                 {
-                    Assert.AreSame(original.DerivedField, clone.DerivedField);
-                    Assert.AreSame(original.DerivedProperty, clone.DerivedProperty);
-                    Assert.AreSame(original.ReferenceTypeField, clone.ReferenceTypeField);
-                    Assert.AreSame(original.ReferenceTypeProperty, clone.ReferenceTypeProperty);
-                    Assert.AreSame(
-                      original.ReferenceTypeArrayField, clone.ReferenceTypeArrayField
-                    );
-                    Assert.AreSame(
-                      original.ReferenceTypeArrayProperty, clone.ReferenceTypeArrayProperty
-                    );
+                    Assert.That(clone.DerivedField, Is.SameAs(original.DerivedField));
+                    Assert.That(clone.DerivedProperty, Is.SameAs(original.DerivedProperty));
+                    Assert.That(clone.ReferenceTypeField, Is.SameAs(original.ReferenceTypeField));
+                    Assert.That(clone.ReferenceTypeProperty, Is.SameAs(original.ReferenceTypeProperty));
+                    Assert.That(clone.ReferenceTypeArrayField, Is.SameAs(original.ReferenceTypeArrayField));
+                    Assert.That(clone.ReferenceTypeArrayProperty, Is.SameAs(original.ReferenceTypeArrayProperty));
                 }
             }
         }
@@ -340,142 +312,94 @@ namespace Nuclex.Cloning.Tests
         {
             if (isPropertyBasedClone)
             {
-                Assert.AreEqual(0, clone.TestField);
-                Assert.AreEqual(0, clone.ValueTypeField.TestField);
-                Assert.AreEqual(0, clone.ValueTypeField.TestProperty);
-                Assert.AreEqual(0, clone.ValueTypeProperty.TestField);
-                Assert.IsNull(clone.ReferenceTypeField);
-                Assert.IsNull(clone.DerivedField);
+                Assert.That(clone.TestField, Is.EqualTo(0));
+                Assert.That(clone.ValueTypeField.TestField, Is.EqualTo(0));
+                Assert.That(clone.ValueTypeField.TestProperty, Is.EqualTo(0));
+                Assert.That(clone.ValueTypeProperty.TestField, Is.EqualTo(0));
+                Assert.That(clone.ReferenceTypeField, Is.Null);
+                Assert.That(clone.DerivedField, Is.Null);
 
                 if (isDeepClone)
                 {
-                    Assert.AreNotSame(original.ReferenceTypeProperty, clone.ReferenceTypeProperty);
-                    Assert.AreNotSame(
-                      original.ReferenceTypeArrayProperty, clone.ReferenceTypeArrayProperty
-                    );
-                    Assert.AreNotSame(original.DerivedProperty, clone.DerivedProperty);
-                    Assert.IsInstanceOf<DerivedReferenceType>(clone.DerivedProperty);
+                    Assert.That(clone.ReferenceTypeProperty, Is.Not.SameAs(original.ReferenceTypeProperty));
+                    Assert.That(clone.ReferenceTypeArrayProperty, Is.Not.SameAs(original.ReferenceTypeArrayProperty));
+                    Assert.That(clone.DerivedProperty, Is.Not.SameAs(original.DerivedProperty));
+                    Assert.That(clone.DerivedProperty, Is.InstanceOf<DerivedReferenceType>());
 
                     var originalDerived = (DerivedReferenceType)original.DerivedProperty;
                     var clonedDerived = (DerivedReferenceType)clone.DerivedProperty;
-                    Assert.AreEqual(originalDerived.TestProperty, clonedDerived.TestProperty);
-                    Assert.AreEqual(originalDerived.DerivedProperty, clonedDerived.DerivedProperty);
+                    Assert.That(clonedDerived.TestProperty, Is.EqualTo(originalDerived.TestProperty));
+                    Assert.That(clonedDerived.DerivedProperty, Is.EqualTo(originalDerived.DerivedProperty));
 
-                    Assert.AreEqual(0, clone.ReferenceTypeProperty.TestField);
-                    Assert.AreNotSame(
-                      original.ReferenceTypeArrayProperty[1, 3][0],
-                      clone.ReferenceTypeArrayProperty[1, 3][0]
-                    );
-                    Assert.AreNotSame(
-                      original.ReferenceTypeArrayProperty[1, 3][2],
-                      clone.ReferenceTypeArrayProperty[1, 3][2]
-                    );
-                    Assert.AreEqual(0, clone.ReferenceTypeArrayProperty[1, 3][0].TestField);
-                    Assert.AreEqual(0, clone.ReferenceTypeArrayProperty[1, 3][2].TestField);
+                    Assert.That(clone.ReferenceTypeProperty.TestField, Is.EqualTo(0));
+                    Assert.That(clone.ReferenceTypeArrayProperty[1, 3][0], Is.Not.SameAs(original.ReferenceTypeArrayProperty[1, 3][0]));
+                    Assert.That(clone.ReferenceTypeArrayProperty[1, 3][2], Is.Not.SameAs(original.ReferenceTypeArrayProperty[1, 3][2]));
+                    Assert.That(clone.ReferenceTypeArrayProperty[1, 3][0].TestField, Is.EqualTo(0));
+                    Assert.That(clone.ReferenceTypeArrayProperty[1, 3][2].TestField, Is.EqualTo(0));
                 }
                 else
                 {
-                    Assert.AreSame(original.ReferenceTypeProperty, clone.ReferenceTypeProperty);
-                    Assert.AreSame(original.ReferenceTypeProperty, clone.ReferenceTypeProperty);
-                    Assert.AreSame(
-                      original.ReferenceTypeArrayProperty, clone.ReferenceTypeArrayProperty
-                    );
+                    Assert.That(clone.ReferenceTypeProperty, Is.SameAs(original.ReferenceTypeProperty));
+                    Assert.That(clone.ReferenceTypeProperty, Is.SameAs(original.ReferenceTypeProperty));
+                    Assert.That(clone.ReferenceTypeArrayProperty, Is.SameAs(original.ReferenceTypeArrayProperty));
                 }
             }
             else
             {
-                Assert.AreEqual(original.TestField, clone.TestField);
-                Assert.AreEqual(original.ValueTypeField.TestField, clone.ValueTypeField.TestField);
-                Assert.AreEqual(original.ValueTypeField.TestProperty, clone.ValueTypeField.TestProperty);
-                Assert.AreEqual(
-                  original.ValueTypeProperty.TestField, clone.ValueTypeProperty.TestField
-                );
-                Assert.AreEqual(
-                  original.ReferenceTypeField.TestField, clone.ReferenceTypeField.TestField
-                );
-                Assert.AreEqual(
-                  original.ReferenceTypeField.TestProperty, clone.ReferenceTypeField.TestProperty
-                );
-                Assert.AreEqual(
-                  original.ReferenceTypeProperty.TestField, clone.ReferenceTypeProperty.TestField
-                );
+                Assert.That(clone.TestField, Is.EqualTo(original.TestField));
+                Assert.That(clone.ValueTypeField.TestField, Is.EqualTo(original.ValueTypeField.TestField));
+                Assert.That(clone.ValueTypeField.TestProperty, Is.EqualTo(original.ValueTypeField.TestProperty));
+                Assert.That(clone.ValueTypeProperty.TestField, Is.EqualTo(original.ValueTypeProperty.TestField));
+                Assert.That(clone.ReferenceTypeField.TestField, Is.EqualTo(original.ReferenceTypeField.TestField));
+                Assert.That(clone.ReferenceTypeField.TestProperty, Is.EqualTo(original.ReferenceTypeField.TestProperty));
+                Assert.That(clone.ReferenceTypeProperty.TestField, Is.EqualTo(original.ReferenceTypeProperty.TestField));
 
                 if (isDeepClone)
                 {
-                    Assert.AreNotSame(original.ReferenceTypeField, clone.ReferenceTypeField);
-                    Assert.AreNotSame(original.ReferenceTypeProperty, clone.ReferenceTypeProperty);
-                    Assert.AreNotSame(original.DerivedField, clone.DerivedField);
-                    Assert.AreNotSame(original.DerivedProperty, clone.DerivedProperty);
-                    Assert.IsInstanceOf<DerivedReferenceType>(clone.DerivedField);
-                    Assert.IsInstanceOf<DerivedReferenceType>(clone.DerivedProperty);
+                    Assert.That(clone.ReferenceTypeField, Is.Not.SameAs(original.ReferenceTypeField));
+                    Assert.That(clone.ReferenceTypeProperty, Is.Not.SameAs(original.ReferenceTypeProperty));
+                    Assert.That(clone.DerivedField, Is.Not.SameAs(original.DerivedField));
+                    Assert.That(clone.DerivedProperty, Is.Not.SameAs(original.DerivedProperty));
+                    Assert.That(clone.DerivedField, Is.InstanceOf<DerivedReferenceType>());
+                    Assert.That(clone.DerivedProperty, Is.InstanceOf<DerivedReferenceType>());
 
                     var originalDerived = (DerivedReferenceType)original.DerivedField;
                     var clonedDerived = (DerivedReferenceType)clone.DerivedField;
-                    Assert.AreEqual(originalDerived.TestField, clonedDerived.TestField);
-                    Assert.AreEqual(originalDerived.TestProperty, clonedDerived.TestProperty);
-                    Assert.AreEqual(originalDerived.DerivedField, clonedDerived.DerivedField);
-                    Assert.AreEqual(originalDerived.DerivedProperty, clonedDerived.DerivedProperty);
+                    Assert.That(clonedDerived.TestField, Is.EqualTo(originalDerived.TestField));
+                    Assert.That(clonedDerived.TestProperty, Is.EqualTo(originalDerived.TestProperty));
+                    Assert.That(clonedDerived.DerivedField, Is.EqualTo(originalDerived.DerivedField));
+                    Assert.That(clonedDerived.DerivedProperty, Is.EqualTo(originalDerived.DerivedProperty));
 
                     originalDerived = (DerivedReferenceType)original.DerivedProperty;
                     clonedDerived = (DerivedReferenceType)clone.DerivedProperty;
-                    Assert.AreEqual(originalDerived.TestField, clonedDerived.TestField);
-                    Assert.AreEqual(originalDerived.TestProperty, clonedDerived.TestProperty);
-                    Assert.AreEqual(originalDerived.DerivedField, clonedDerived.DerivedField);
-                    Assert.AreEqual(originalDerived.DerivedProperty, clonedDerived.DerivedProperty);
+                    Assert.That(clonedDerived.TestField, Is.EqualTo(originalDerived.TestField));
+                    Assert.That(clonedDerived.TestProperty, Is.EqualTo(originalDerived.TestProperty));
+                    Assert.That(clonedDerived.DerivedField, Is.EqualTo(originalDerived.DerivedField));
+                    Assert.That(clonedDerived.DerivedProperty, Is.EqualTo(originalDerived.DerivedProperty));
 
-                    Assert.AreNotSame(
-                      original.ReferenceTypeArrayField, clone.ReferenceTypeArrayField
-                    );
-                    Assert.AreNotSame(
-                      original.ReferenceTypeArrayProperty, clone.ReferenceTypeArrayProperty
-                    );
-                    Assert.AreNotSame(
-                      original.ReferenceTypeArrayProperty[1, 3][0],
-                      clone.ReferenceTypeArrayProperty[1, 3][0]
-                    );
-                    Assert.AreNotSame(
-                      original.ReferenceTypeArrayProperty[1, 3][2],
-                      clone.ReferenceTypeArrayProperty[1, 3][2]
-                    );
-                    Assert.AreEqual(
-                      original.ReferenceTypeArrayProperty[1, 3][0].TestField,
-                      clone.ReferenceTypeArrayProperty[1, 3][0].TestField
-                    );
-                    Assert.AreEqual(
-                      original.ReferenceTypeArrayProperty[1, 3][2].TestField,
-                      clone.ReferenceTypeArrayProperty[1, 3][2].TestField
-                    );
+                    Assert.That(clone.ReferenceTypeArrayField, Is.Not.SameAs(original.ReferenceTypeArrayField));
+                    Assert.That(clone.ReferenceTypeArrayProperty, Is.Not.SameAs(original.ReferenceTypeArrayProperty));
+                    Assert.That(clone.ReferenceTypeArrayProperty[1, 3][0], Is.Not.SameAs(original.ReferenceTypeArrayProperty[1, 3][0]));
+                    Assert.That(clone.ReferenceTypeArrayProperty[1, 3][2], Is.Not.SameAs(original.ReferenceTypeArrayProperty[1, 3][2]));
+                    Assert.That(clone.ReferenceTypeArrayProperty[1, 3][0].TestField, Is.EqualTo(original.ReferenceTypeArrayProperty[1, 3][0].TestField));
+                    Assert.That(clone.ReferenceTypeArrayProperty[1, 3][2].TestField, Is.EqualTo(original.ReferenceTypeArrayProperty[1, 3][2].TestField));
                 }
                 else
                 {
-                    Assert.AreSame(original.DerivedField, clone.DerivedField);
-                    Assert.AreSame(original.DerivedProperty, clone.DerivedProperty);
-                    Assert.AreSame(original.ReferenceTypeField, clone.ReferenceTypeField);
-                    Assert.AreSame(original.ReferenceTypeProperty, clone.ReferenceTypeProperty);
-                    Assert.AreSame(
-                      original.ReferenceTypeArrayField, clone.ReferenceTypeArrayField
-                    );
-                    Assert.AreSame(
-                      original.ReferenceTypeArrayProperty, clone.ReferenceTypeArrayProperty
-                    );
+                    Assert.That(clone.DerivedField, Is.SameAs(original.DerivedField));
+                    Assert.That(clone.DerivedProperty, Is.SameAs(original.DerivedProperty));
+                    Assert.That(clone.ReferenceTypeField, Is.SameAs(original.ReferenceTypeField));
+                    Assert.That(clone.ReferenceTypeProperty, Is.SameAs(original.ReferenceTypeProperty));
+                    Assert.That(clone.ReferenceTypeArrayField, Is.SameAs(original.ReferenceTypeArrayField));
+                    Assert.That(clone.ReferenceTypeArrayProperty, Is.SameAs(original.ReferenceTypeArrayProperty));
                 }
             }
 
-            Assert.AreEqual(original.TestProperty, clone.TestProperty);
-            Assert.AreEqual(
-              original.ValueTypeProperty.TestProperty, clone.ValueTypeProperty.TestProperty
-            );
-            Assert.AreEqual(
-              original.ReferenceTypeProperty.TestProperty, clone.ReferenceTypeProperty.TestProperty
-            );
-            Assert.AreEqual(
-              original.ReferenceTypeArrayProperty[1, 3][0].TestProperty,
-              clone.ReferenceTypeArrayProperty[1, 3][0].TestProperty
-            );
-            Assert.AreEqual(
-              original.ReferenceTypeArrayProperty[1, 3][2].TestProperty,
-              clone.ReferenceTypeArrayProperty[1, 3][2].TestProperty
-            );
+            Assert.That(clone.TestProperty, Is.EqualTo(original.TestProperty));
+            Assert.That(clone.ValueTypeProperty.TestProperty, Is.EqualTo(original.ValueTypeProperty.TestProperty));
+            Assert.That(clone.ReferenceTypeProperty.TestProperty, Is.EqualTo(original.ReferenceTypeProperty.TestProperty));
+            Assert.That(clone.ReferenceTypeArrayProperty[1, 3][0].TestProperty, Is.EqualTo(original.ReferenceTypeArrayProperty[1, 3][0].TestProperty));
+            Assert.That(clone.ReferenceTypeArrayProperty[1, 3][2].TestProperty, Is.EqualTo(original.ReferenceTypeArrayProperty[1, 3][2].TestProperty));
         }
 
         /// <summary>Creates a value type with random data for testing</summary>
