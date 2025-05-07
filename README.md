@@ -1,3 +1,5 @@
+[![Nuclex.Cloning Build-Test](https://github.com/eljonny/Nuclex.Cloning/actions/workflows/dotnet.yml/badge.svg)](https://github.com/eljonny/Nuclex.Cloning/actions/workflows/dotnet.yml)
+
 Nuclex.Cloning
 ==============
 
