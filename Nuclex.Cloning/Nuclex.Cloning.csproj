@@ -1,53 +1,39 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{D2833BEB-BBA9-4614-9398-35F9850D46A7}</ProjectGuid>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Nuclex.Cloning</RootNamespace>
-    <AssemblyName>Nuclex.Cloning</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <AssemblyTitle>Nuclex.Cloning</AssemblyTitle>
+    <Product>Nuclex.Cloning</Product>
+    <Copyright>Copyright © 2013 Nuclex Development Labs/junweilee Original Work, Copyright © 2025 Jonathan Hyry .Net Standard 2.0 Upgrade</Copyright>
+    <AssemblyVersion>1.0.2.0</AssemblyVersion>
+    <FileVersion>1.0.0.1</FileVersion>
+    <PackageVersion>1.0.2</PackageVersion>
+    <Platforms>AnyCPU;x64</Platforms>
+    <PackageId>Nuclex.Cloning.NetStd2.0</PackageId>
+    <Authors>junweilee, eljonny</Authors>
+    <PackageIcon>images/clone.png</PackageIcon>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageLicenseExpression>CPL-1.0</PackageLicenseExpression>
+    <PackageProjectUrl>http://blog.nuclex-games.com/mono-dotnet/fast-deep-cloning/</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/eljonny/Nuclex.Cloning</RepositoryUrl>
+    <PackageReleaseNotes>
+      2025-05-06 .Net Standard 2.0 packaging, update test project to .Net 8.0 and unit tests for NUnit 4.x; all tests pass.
+    </PackageReleaseNotes>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <PackageTags>clone deepclone copy</PackageTags>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System.Core" />
+    <Folder Include="img\" />
+    <None Include="../README.md">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+    <None Include="img/clone.png">
+      <Pack>True</Pack>
+      <PackagePath>images/</PackagePath>
+    </None>
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="ExpressionTreeCloner.FieldBased.cs" />
-    <Compile Include="Helpers\CloneHelpers.cs" />
-    <Compile Include="ExpressionTreeCloner.cs" />
-    <Compile Include="ExpressionTreeCloner.PropertyBased.cs" />
-    <Compile Include="ReflectionCloner.cs" />
-    <Compile Include="Interfaces\ICloneFactory.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>
